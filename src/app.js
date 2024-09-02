@@ -9,33 +9,37 @@ if(!customElements.get('custom-canvas')) {
         const CANVAS_WIDTH = 512;
         const CANVAS_HEIGHT = 512;
 
-        this.canvas = this.canvas ? this.canvas : this.querySelector('canvas');
+        const canvas = this.querySelector('canvas');
+        console.log(canvas);
 
-        this.canvas.width = CANVAS_WIDTH * devicePixelRatio;
-        this.canvas.height = CANVAS_HEIGHT * devicePixelRatio;
+        canvas.width = CANVAS_WIDTH * devicePixelRatio;
+        canvas.height = CANVAS_HEIGHT * devicePixelRatio;
 
-        this.canvas.style.setProperty('width', `${CANVAS_WIDTH}px`);
-        this.canvas.style.setProperty('height', `${CANVAS_HEIGHT}px`);
+        canvas.style.setProperty('width', `${CANVAS_WIDTH}px`);
+        canvas.style.setProperty('height', `${CANVAS_HEIGHT}px`);
 
-        this.canvasCtx = {
-          canvas2d: this.canvas.getContext('2d'),
-          canvasWebgl: this.canvas.getContext('webgl'),
-          canvasWegl2: this.canvas.getContext('wegl2'),
-          canvasGpu: this.canvas.getContext('gpu')
+        var canvasCtx = {
+          canvas2d: canvas.getContext('2d'),
+          canvasWebgl: canvas.getContext('webgl'),
+          canvasWegl2: canvas.getContext('wegl2'),
+          canvasGpu: canvas.getContext('gpu')
         };
+
+        requestAnimationFrame(drawFrame);
+
+        function drawFrame(ts) {
+          ts /= 1000
+          console.log(ts);
+          
+          canvasCtx.canvas2d.moveTo(100, 100);
+          canvasCtx.canvas2d.lineTo(200, 200);
+          canvasCtx.canvas2d.stroke();
+          requestAnimationFrame(drawFrame);
+        }
       }
 
       connectedCallback() {
-        requestAnimationFrame(drawFrame);
-
-        function drawFrame(timestampSinceFirstSchedule) {
-          console.log(timestampSinceFirstSchedule);
-          this.canvasCtx.canvas2d.moveTo(100, 100);
-          this.canvasCtx.canvas2d.lineTo(200, 200);
-          this.canvasCtx.canvas2d.stroke();
-  
-          requestAnimationFrame(drawFrame);
-        }
+        console.log("Custom element added to page.");
       }
 
       disconnectedCallback() {
