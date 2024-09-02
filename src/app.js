@@ -39,7 +39,7 @@ if(!customElements.get('custom-canvas')) {
       }
 
       connectedCallback() {
-        console.log("Custom element added to page.");
+        console.log("Custom element is added to page.");
       }
 
       disconnectedCallback() {
