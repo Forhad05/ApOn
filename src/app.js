@@ -5,31 +5,37 @@ if(!customElements.get('custom-canvas')) {
     class CustomCanvas extends HTMLElement {
       constructor() {
         super();
-      }
 
-      connectedCallback() {
-        this.setUpCanvas(document.getElementById('canvas'));
-      }
+        const CANVAS_WIDTH = 512;
+        const CANVAS_HEIGHT = 512;
 
-      setUpCanvas(canvasEl, width = 512, height = 512) {
-        const CANVAS_WIDTH = width;
-        const CANVAS_HEIGHT = height;
+        this.canvas = this.canvas ? this.canvas : this.querySelector('canvas');
 
-        this.canvas = canvasEl ? canvasEl : this.querySelector('canvas');
+        this.canvas.width = CANVAS_WIDTH * devicePixelRatio;
+        this.canvas.height = CANVAS_HEIGHT * devicePixelRatio;
 
-        this.canvas.width = CANVAS_WIDTH;
-        this.canvas.height = CANVAS_HEIGHT;
+        this.canvas.style.setProperty('width', `${CANVAS_WIDTH}px`);
+        this.canvas.style.setProperty('height', `${CANVAS_HEIGHT}px`);
 
         this.canvasCtx = {
           canvas2d: this.canvas.getContext('2d'),
           canvasWebgl: this.canvas.getContext('webgl'),
           canvasWegl2: this.canvas.getContext('wegl2'),
           canvasGpu: this.canvas.getContext('gpu')
-        }
+        };
+      }
 
-        this.canvasCtx.canvas2d.moveTo(100, 100);
-        this.canvasCtx.canvas2d.lineTo(200, 200);
-        this.canvasCtx.canvas2d.stroke();
+      connectedCallback() {
+        requestAnimationFrame(drawFrame);
+
+        function drawFrame(timestampSinceFirstSchedule) {
+          console.log(timestampSinceFirstSchedule);
+          this.canvasCtx.canvas2d.moveTo(100, 100);
+          this.canvasCtx.canvas2d.lineTo(200, 200);
+          this.canvasCtx.canvas2d.stroke();
+  
+          requestAnimationFrame(drawFrame);
+        }
       }
 
       disconnectedCallback() {
